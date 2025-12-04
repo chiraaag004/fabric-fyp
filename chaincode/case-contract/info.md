@@ -1,0 +1,1 @@
+Copy this folder structure "chaincode/case-contract/" to fabric-samples folder

@@ -1,9 +1,3 @@
-Here is a professional, complete `README.md` file tailored specifically for your project. It includes the setup instructions, the technical stack, and the "Operation Digital Vault" usage scenario.
-
-You can create a file named `README.md` in the root of your repository and paste this content in.
-
------
-
 # 🛡️ Secure Case Management System on Blockchain
 
 > **Final Year Project** | A decentralized application (DApp) to ensure the integrity, traceability, and immutable chain of custody for digital evidence in police investigations.
@@ -36,57 +30,45 @@ This project utilizes **Hyperledger Fabric**, a permissioned enterprise blockcha
 
 -----
 
-## 🚀 Quick Start Guide
+## 🚀 Quick Start Guide (Automated)
 
-This project is optimized for **GitHub Codespaces** (Linux Environment).
+This project includes a **One-Click Setup Script** (`setup_and_run.sh`) that handles the entire lifecycle: cleaning previous data, starting the network, deploying the smart contract, and launching the dashboard.
 
-### 1\. Start the Blockchain Network
+### 1\. Run the Auto-Setup Script
 
-Initialize the network and the Certificate Authority (CA) servers.
-
-```bash
-cd fabric-samples/test-network
-
-# 1. Takedown previous network (clean slate)
-./network.sh down
-
-# 2. Start Network with Certificate Authority
-./network.sh up createChannel -ca
-```
-
-### 2\. Deploy the Smart Contract
-
-Install the business logic onto the peers.
+Open the terminal in the root directory and run:
 
 ```bash
-./network.sh deployCC -ccn casecontract -ccp ../chaincode/case-contract/ -ccl javascript -ccv 1.0 -ccs 1
+# Make the script executable (only needed once)
+chmod +x setup_and_run.sh
+
+# Start the entire system
+./setup_and_run.sh
 ```
 
-### 3\. Launch the Application
+### 2\. Wait for Completion
 
-Start the Node.js server to launch the dashboard.
+The script will take approximately **2-3 minutes**. It performs the following:
 
-```bash
-cd ../chaincode/case-contract
+  * **🧹 Clean:** Removes old wallets, containers, and cryptographic keys.
+  * **🏗️ Network:** Starts the Hyperledger Fabric network with Certificate Authorities.
+  * **📦 Deploy:** Installs the `casecontract` chaincode on all peers.
+  * **🧪 Verify:** Runs a sanity check transaction (`CASE_FIXED_2`).
+  * **🌐 Launch:** Installs website dependencies and starts the Node.js server.
 
-# 1. Clean previous wallet data (if any)
-rm -rf wallet
+### 3\. Access the Dashboard
 
-# 2. Install dependencies (only first time)
-npm install
+Once the script finishes, you will see `🚀 STARTING SERVER NOW....`
 
-# 3. Start Server
-node app.js
-```
-
-> **Accessing the UI:**
-> If running on Codespaces, go to the **PORTS** tab and click the 🌐 icon next to Port `3000`.
+1.  Go to the **PORTS** tab in your editor (VS Code / Codespaces).
+2.  Find **Port 3000**.
+3.  Click the **Globe Icon (🌐)** to open the website.
 
 -----
 
 ## 🕵️‍♂️ Usage Scenario: "Operation Digital Vault"
 
-Follow this script to demonstrate the system's capabilities.
+Follow this script to demonstrate the system's capabilities during the presentation.
 
 ### Phase 1: Identity (The Admin Console)
 
@@ -98,7 +80,7 @@ Follow this script to demonstrate the system's capabilities.
 ### Phase 2: The Incident (Creation)
 
 1.  Go to the **Blue Box**.
-2.  **Login As:** Select `officer_singh`.
+2.  **Login As:** Select `officer_singh` from the dropdown.
 3.  **Case ID:** `CASE_777`.
 4.  **Description:** `Cyber Attack on Power Grid`.
 5.  Click **Log Case**.
@@ -107,9 +89,10 @@ Follow this script to demonstrate the system's capabilities.
 ### Phase 3: The Handover (Chain of Custody)
 
 1.  Go to the **Cyan Box**.
-2.  **Case ID:** `CASE_777`.
-3.  **Owner:** Select `Forensics_Lab`.
-4.  Click **Transfer Custody**.
+2.  **Login As:** Select `officer_singh`.
+3.  **Case ID:** `CASE_777`.
+4.  **Owner:** Select `Forensics_Lab`.
+5.  Click **Transfer Custody**.
       * *Result:* The smart contract verifies the current owner and updates the `currentCustodian` field.
 
 ### Phase 4: The Audit (Traceability)
@@ -117,7 +100,7 @@ Follow this script to demonstrate the system's capabilities.
 1.  Go to the **Green Box**.
 2.  Enter `CASE_777`.
 3.  Click **Trace**.
-      * *Result:* A visual timeline appears, showing the creation timestamp and the exact moment custody was transferred.
+      * *Result:* A visual timeline appears, showing the creation timestamp, the evidence addition, and the exact moment custody was transferred.
 
 -----
 
@@ -125,6 +108,7 @@ Follow this script to demonstrate the system's capabilities.
 
 ```text
 /
+├── setup_and_run.sh          # <--- START HERE (Automation Script)
 ├── fabric-samples/
 │   ├── test-network/         # Network scripts (start, stop, deploy)
 │   └── chaincode/
@@ -147,20 +131,22 @@ Follow this script to demonstrate the system's capabilities.
 **Error: `Identity 'officer_singh' is already registered`**
 
   * **Cause:** You restarted the app but not the network. The CA remembers the user, but your local wallet lost the key.
-  * **Fix:** Run the **Hard Reset**: `./network.sh down` and restart from Step 1.
+  * **Fix:** Run the Hard Reset: `./setup_and_run.sh`.
 
 **Error: `Access Denied`**
 
   * **Cause:** Old crypto material in the wallet folder.
-  * **Fix:** Run `rm -rf wallet` inside the `case-contract` folder and restart `node app.js`.
+  * **Fix:** The `./setup_and_run.sh` script handles this automatically by deleting the wallet before starting.
 
 -----
 
 ## 👥 Contributors
 
-  * **Chirag Gupta** - *Full Stack Blockchain Developer*
-  * **Aashutosh Gandhi** - *Full Stack Blockchain Developer*
+  * **Chirag Gupta**
+  * **Aashutosh Gandhi**
 
 -----
 
 **License:** MIT
+
+-----
